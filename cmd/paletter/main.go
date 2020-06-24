@@ -7,6 +7,7 @@ import (
 	_ "image/png"
 	"log"
 	"os"
+	"runtime/pprof"
 
 	_ "golang.org/x/image/bmp"
 	_ "golang.org/x/image/tiff"
@@ -25,12 +26,26 @@ func main() {
 	flag.BoolVar(&htmlOut, "html", false, "Output an html page")
 	flag.BoolVar(&pngOut, "png", true, "Output a png image")
 	flag.StringVar(&outName, "out", "", "Set output file name/path")
+	cpuprofile := flag.String("cpuprofile", "", "write cpu profile to file")
 	flag.Parse()
 
 	flag.Usage = func() {
 		fmt.Printf("Usage: paletter [OPTIONS] <IMAGE>\n")
 		fmt.Printf("Flags:\n")
 		flag.PrintDefaults()
+	}
+
+	if *cpuprofile != "" {
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+		err = pprof.StartCPUProfile(f)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer pprof.StopCPUProfile()
 	}
 
 	if flag.NArg() == 0 {

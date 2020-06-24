@@ -32,4 +32,4 @@ The CLI app outputs `png` images of resolution dependent on the source image (se
 
 ### Notes
 - Paletter uses the [CIE L\*a\*b\* color space](https://en.wikipedia.org/wiki/CIELAB_color_space) both for the simplicity of its representation and it being device-indipendent
-- The k-Means implementation included in paletter is the naive one ([museli/kmeans](https://github.com/muesli/kmeans/))
+- The k-Means implementation included in paletter is the naive one ([muesli/kmeans](https://github.com/muesli/kmeans/))
