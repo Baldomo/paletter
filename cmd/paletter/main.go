@@ -18,12 +18,14 @@ import (
 
 var (
 	htmlOut bool
+	nColors int
 	pngOut  bool
 	outName string
 )
 
 func main() {
 	flag.BoolVar(&htmlOut, "html", false, "Output an html page")
+	flag.IntVar(&nColors, "colors", 7, "Number of colors to extract from the image")
 	flag.BoolVar(&pngOut, "png", true, "Output a png image")
 	flag.StringVar(&outName, "out", "", "Set output file name/path")
 	cpuprofile := flag.String("cpuprofile", "", "write cpu profile to file")
@@ -59,6 +61,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	if nColors < 0 {
+		fmt.Println("-colors must be a positive number")
+		os.Exit(1)
+	}
+
 	// Open image
 	img, err := paletter.OpenImage(flag.Arg(0))
 	if err != nil {
@@ -66,7 +73,7 @@ func main() {
 	}
 
 	obs := paletter.ImageToObservation(img)
-	cs, _ := paletter.CalculatePalette(obs, 7)
+	cs, _ := paletter.CalculatePalette(obs, nColors)
 	colors := paletter.ColorsFromClusters(cs)
 
 	if htmlOut {
