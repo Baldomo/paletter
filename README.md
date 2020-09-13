@@ -19,6 +19,8 @@ $ go get -u -v github.com/Baldomo/paletter/cmd/paletter
 ```
 Usage: paletter [OPTIONS] <IMAGE>
 Flags:
+  -colors int
+        Number of colors to extract from the image (default 7)
   -html
         Output an html page
   -out string
