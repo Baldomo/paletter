@@ -24,7 +24,7 @@ func colorsToHex(colors []colorful.Color) []string {
 	return ret
 }
 
-// Creates an HTML document containing the orignal image and the color palette through
+// Creates an HTML document containing the original image and the color palette through
 // a template with predefined layout
 func WriteHTML(imgPath string, outFileName string, colors []colorful.Color) error {
 	var outFilePath string

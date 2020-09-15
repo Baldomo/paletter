@@ -56,7 +56,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if htmlOut && pngOut {
+	if !htmlOut && !pngOut {
 		fmt.Println("Either one of -html or -png must be set")
 		os.Exit(1)
 	}
