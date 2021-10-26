@@ -12,7 +12,7 @@ $ go get -u -v github.com/Baldomo/paletter
 ```
 To install the CLI app use:
 ```sh
-$ go get -u -v github.com/Baldomo/paletter/cmd/paletter
+$ go install -v github.com/Baldomo/paletter/cmd/paletter
 ```
 
 ### Usage (CLI)
