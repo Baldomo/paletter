@@ -14,6 +14,7 @@ import (
 	_ "golang.org/x/image/webp"
 
 	"github.com/Baldomo/paletter"
+	"github.com/Baldomo/paletter/output"
 )
 
 var (
@@ -66,25 +67,18 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Open image
-	img, err := paletter.OpenImage(flag.Arg(0))
+	pal, err := paletter.FromPath(flag.Arg(0), nColors)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	obs := paletter.ImageToObservation(img)
-	cs, _ := paletter.CalculatePalette(obs, nColors)
-	colors := paletter.ColorsFromClusters(cs)
-
+	var out output.Output = output.NewPNG(flag.Arg(0), outName)
 	if htmlOut {
-		err := paletter.WriteHTML(flag.Arg(0), outName, colors)
-		if err != nil {
-			log.Fatal(err)
-		}
-	} else if pngOut {
-		err := paletter.WriteImage(flag.Arg(0), outName, colors)
-		if err != nil {
-			log.Fatal(err)
-		}
+		out = output.NewHTML(flag.Arg(0), outName)
+	}
+
+	err = pal.Generate(out)
+	if err != nil {
+		log.Fatal(err)
 	}
 }

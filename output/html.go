@@ -1,4 +1,4 @@
-package paletter
+package output
 
 import (
 	"html/template"
@@ -9,10 +9,25 @@ import (
 	"github.com/lucasb-eyer/go-colorful"
 )
 
+// Describes a simple HTML file output
+type HTML struct {
+	imgPath     string
+	outFileName string
+}
+
+var _ Output = &HTML{}
+
 type templateData struct {
 	Title     string
 	ImagePath string
 	Colors    []string
+}
+
+// Creates an HTML output object
+func NewHTML(imgPath string, outFilename string) *HTML {
+	return &HTML{
+		imgPath, outFilename,
+	}
 }
 
 func colorsToHex(colors []colorful.Color) []string {
@@ -24,9 +39,9 @@ func colorsToHex(colors []colorful.Color) []string {
 	return ret
 }
 
-// Creates an HTML document containing the original image and the color palette through
+// Writes an HTML document containing the original image and the color palette through
 // a template with predefined layout
-func WriteHTML(imgPath string, outFileName string, colors []colorful.Color) error {
+func (h HTML) Write(colors []colorful.Color) error {
 	var outFilePath string
 
 	templ, err := template.New("picture").Parse(htmlTemplate)
@@ -35,16 +50,16 @@ func WriteHTML(imgPath string, outFileName string, colors []colorful.Color) erro
 	}
 
 	// Get absolute path from relative path supplied as argument
-	filePath, err := filepath.Abs(imgPath)
+	filePath, err := filepath.Abs(h.imgPath)
 	if err != nil {
 		return err
 	}
 
 	// Place outFile in the same directory as the provided image
-	if outFileName == "" {
-		outFilePath = path.Join(filepath.Dir(imgPath), "palette.png")
+	if h.outFileName == "" {
+		outFilePath = path.Join(filepath.Dir(h.imgPath), "palette.png")
 	} else {
-		outFilePath, _ = filepath.Abs(outFileName)
+		outFilePath, _ = filepath.Abs(h.outFileName)
 	}
 	outFile, err := os.Create(outFilePath)
 	if err != nil {
@@ -53,7 +68,7 @@ func WriteHTML(imgPath string, outFileName string, colors []colorful.Color) erro
 	defer outFile.Close()
 
 	err = templ.Execute(outFile, templateData{
-		filepath.Base(imgPath),
+		filepath.Base(h.imgPath),
 		filePath,
 		colorsToHex(colors),
 	})

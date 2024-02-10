@@ -1,4 +1,4 @@
-package paletter
+package output
 
 import (
 	"image"

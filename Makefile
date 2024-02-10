@@ -1,4 +1,4 @@
-SRC := cmd/paletter/main.go colors.go doc.go genhtml.go genimage.go paletter.go utils.go
+SRC := cmd/paletter/main.go $(wildcard generator/*) colors.go doc.go paletter.go
 LDFLAGS := -s -w
 
 all: build/linux.tar build/mac.tar build/windows.tar

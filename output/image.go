@@ -1,4 +1,4 @@
-package paletter
+package output
 
 import (
 	"image"
@@ -16,6 +16,20 @@ const (
 	border            = 4
 	paletteHeightPerc = 0.5
 )
+
+// Describes a simple PNG file output. See "images" (or the main README) for sample outpts
+type PNG struct {
+	imgPath     string
+	outFileName string
+}
+
+var _ Output = &PNG{}
+
+func NewPNG(imgPath string, outFilename string) *PNG {
+	return &PNG{
+		imgPath, outFilename,
+	}
+}
 
 // Calculates the height of the palette using a percentage
 // of the height of the original image
@@ -63,10 +77,10 @@ func colorRects(srcWidth int, srcHeight int, nColors int) []image.Rectangle {
 
 // Serializes a list of colors (palette) into an image with a defined layout, containing
 // the original image and the palette
-func WriteImage(imgPath string, outFileName string, colors []colorful.Color) error {
+func (p PNG) Write(colors []colorful.Color) error {
 	var outFilePath string
 
-	srcImg, err := OpenImage(imgPath)
+	srcImg, err := OpenImage(p.imgPath)
 	if err != nil {
 		return err
 	}
@@ -91,10 +105,10 @@ func WriteImage(imgPath string, outFileName string, colors []colorful.Color) err
 	}
 
 	// Place outFile in the same directory as the provided image
-	if outFileName == "" {
-		outFilePath = path.Join(filepath.Dir(imgPath), "palette.png")
+	if p.outFileName == "" {
+		outFilePath = path.Join(filepath.Dir(p.imgPath), "palette.png")
 	} else {
-		outFilePath, _ = filepath.Abs(outFileName)
+		outFilePath, _ = filepath.Abs(p.outFileName)
 	}
 	outFile, err := os.Create(outFilePath)
 	if err != nil {
